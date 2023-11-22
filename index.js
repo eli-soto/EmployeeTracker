@@ -1,13 +1,13 @@
 const inquirer = require("inquirer");
 const db = require("./db/connection");
-
+//console.log(db)
 db.connect((err) => {
   if (err) throw err;
   console.log("Database connected.");
   employee_tracker();
 });
 
-let employee_tracker = function () {
+function employee_tracker () {
   inquirer
     .prompt([
       {
@@ -18,7 +18,7 @@ let employee_tracker = function () {
           "View all deparments",
           "View all roles",
           "View all employees",
-          "Add a deparment",
+          "Add a department",
           "Add a role",
           "Add employees",
           "Update an employee role",
@@ -29,12 +29,11 @@ let employee_tracker = function () {
 
     .then((answer) => {
       switch (answer.prompt) {
-        case "view all employees":
+
+        case "View all employees":
           viewAllEmployees();
           break;
-        case "exit":
-          db.end();
-          break;
+
         case "View all deparments":
           viewAllDeparments();
           break;
@@ -53,12 +52,14 @@ let employee_tracker = function () {
         case "Update an employee role":
           updateAnEmployessRole();
           break;
+          default:
+          process.exit()
       }
     });
 };
 
 function viewAllEmployees() {
-  db.query("select * from employees", (error, data) => {
+  db.query("select * from employee", (error, data) => {
     if (error) throw error;
     console.table(data);
     employee_tracker();
@@ -66,7 +67,7 @@ function viewAllEmployees() {
 }
 
 function viewAllDeparments() {
-  db.query("select * from deparments ", (error, data) => {
+  db.query("select * from department ", (error, data) => {
     if (error) throw error;
     console.table(data);
     employee_tracker();
@@ -74,7 +75,7 @@ function viewAllDeparments() {
 }
 
 function viewAllRoles() {
-  db.query("select * from employess ", (error, data) => {
+  db.query("select * from department ", (error, data) => {
     if (error) throw error;
     console.table(data);
     employee_tracker();
@@ -112,4 +113,4 @@ function updateAnEmployessRole() {
   });
 }
 
-employee_tracker();
+//employee_tracker();
