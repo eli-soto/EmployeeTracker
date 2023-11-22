@@ -37,7 +37,7 @@ function employee_tracker () {
         case "View all deparments":
           viewAllDeparments();
           break;
-        case "View all Roles":
+        case "View all roles":
           viewAllRoles();
           break;
         case "Add a department":
@@ -75,7 +75,7 @@ function viewAllDeparments() {
 }
 
 function viewAllRoles() {
-  db.query("select * from department ", (error, data) => {
+  db.query("select * from role ", (error, data) => {
     if (error) throw error;
     console.table(data);
     employee_tracker();
@@ -83,11 +83,20 @@ function viewAllRoles() {
 }
 
 function addADeparment() {
-  db.query("select * from deparment ", (error, data) => {
-    if (error) throw error;
-    console.table(data);
-    employee_tracker();
-  });
+inquirer.promt([{
+type: "input",
+name: "departName",
+message: "What is the name of this department"
+}])
+.then((answer)=>{
+    db.query("INSERT INTO deparmeny set ?",{
+                name: answer.departName
+    },(error)=>{
+        if (error) throw error;
+        console.table(answer);
+        employee_tracker();
+    })
+}) 
 }
 function addARole() {
   db.query("select * from roles ", (error, data) => {
