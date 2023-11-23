@@ -83,43 +83,60 @@ function viewAllRoles() {
 }
 
 function addADeparment() {
-inquirer.promt([{
+inquirer.prompt([{
 type: "input",
 name: "departName",
 message: "What is the name of this department"
 }])
 .then((answer)=>{
-    db.query("INSERT INTO deparmeny set ?",{
-                name: answer.departName
-    },(error)=>{
+    db.query("INSERT INTO department set ?",{
+                name: answer.departName},(error)=>{
         if (error) throw error;
         console.table(answer);
         employee_tracker();
     })
 }) 
+
 }
+
 function addARole() {
-  db.query("select * from roles ", (error, data) => {
-    if (error) throw error;
-    console.table(data);
-    employee_tracker();
-  });
+    inquirer.prompt([{
+    type: "input",
+    name: "roleTitle", "roleSalary", "roleDepartment",
+    message: "What is the title, salary, and department of this role"
+    }])
+    .then((answer)=>{
+        db.query("INSERT INTO role set ?",{
+                    title: answer.roleTitle,
+                    salary: answer.roleSalary,
+                    department_id: answer.roleDepartment,
+        },(error)=>{
+            if (error) throw error;
+            console.table(answer);
+            employee_tracker();
+        })
+    }) 
 }
+
 
 function addEmployees() {
-  db.query("select * from employees ", (error, data) => {
-    if (error) throw error;
-    console.table(data);
-    employee_tracker();
-  });
+    inquirer.prompt([{
+    type: "input",
+    name: "employeeFirst", "employeeLast", "employeeRoleId", "employeeManagerId",
+    message: "What is the first name, last name, and role?",
+    }])
+    .then((answer)=>{
+        db.query("INSERT INTO employee set ?",{
+                   employee: answer.employeeFirst,
+                   employee: answer.employeeLast,
+                   employee: answer.employeeRoleId,
+                   employee: answer.employeeManagerId,
+        },(error)=>{
+            if (error) throw error;
+            console.table(answer);
+            employee_tracker();
+        })
+    }) 
 }
 
-function updateAnEmployessRole() {
-  db.query("select * from role ", (error, data) => {
-    if (error) throw error;
-    console.table(data);
-    employee_tracker();
-  });
-}
-
-//employee_tracker();
+employee_tracker();
