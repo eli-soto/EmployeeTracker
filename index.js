@@ -100,43 +100,76 @@ message: "What is the name of this department"
 }
 
 function addARole() {
-    inquirer.prompt([{
-    type: "input",
-    name: "roleTitle", "roleSalary", "roleDepartment",
-    message: "What is the title, salary, and department of this role"
-    }])
-    .then((answer)=>{
-        db.query("INSERT INTO role set ?",{
-                    title: answer.roleTitle,
-                    salary: answer.roleSalary,
-                    department_id: answer.roleDepartment,
-        },(error)=>{
-            if (error) throw error;
-            console.table(answer);
-            employee_tracker();
-        })
-    }) 
+    db.query("SELECT department.name FROM department", (err, deptId) => {
+        console.log(err)
+        const departmentId = deptId.map(dept => dept.name)
+        inquirer.prompt([
+        {
+            type: "input",
+            name: "title",
+            message: "What is the title of this role"
+        },
+        {
+            type: "input",
+            name: "salary",
+            message: "What is the salary of this role"
+        },
+        {
+            type: "list",
+            name: "department_id",
+            message: "What is the department of this role",
+            choices: departmentId,
+        },
+    ])
+    .then(({ title, salary, department_id })=>{
+        console.log(department_id)
+          db.query("INSERT INTO role set ?",{ title, salary, department_id },(error)=>{
+                if (error) throw error;
+                viewAllRoles();
+                employee_tracker();
+            })
+        }) 
+     })
 }
 
 
 function addEmployees() {
-    inquirer.prompt([{
-    type: "input",
-    name: "employeeFirst", "employeeLast", "employeeRoleId", "employeeManagerId",
-    message: "What is the first name, last name, and role?",
-    }])
-    .then((answer)=>{
-        db.query("INSERT INTO employee set ?",{
-                   employee: answer.employeeFirst,
-                   employee: answer.employeeLast,
-                   employee: answer.employeeRoleId,
-                   employee: answer.employeeManagerId,
-        },(error)=>{
-            if (error) throw error;
-            console.table(answer);
-            employee_tracker();
-        })
-    }) 
+    db.query("SELECT department.name FROM department", (err, deptId) => {
+        console.log(err)
+        const departmentId = deptId.map(dept => dept.name)
+        inquirer.prompt([
+        {
+            type: "input",
+            name: "first_name",
+            message: "What is the first name"
+        },
+        {
+            type: "input",
+            name: "last_name",
+            message: "What is the last name"
+        },
+        {
+            type: "list",
+            name: "role_id",
+            message: "What is the role id",
+            choices: departmentId,
+        },
+        {
+            type: "list",
+            name: "manager_id",
+            message: "What is the manager id",
+            choices: departmentId,
+        },
+    ])
+    .then(({ first_name, last_name, role_id, manager_id })=>{
+        console.log(department_id)
+          db.query("INSERT INTO role set ?",{ first_name, last_name, role_id, manager_id },(error)=>{
+                if (error) throw error;
+                viewAllRoles();
+                employee_tracker();
+            })
+        }) 
+     })
 }
 
-employee_tracker();
+//employee_tracker();
