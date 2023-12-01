@@ -100,9 +100,10 @@ message: "What is the name of this department"
 }
 
 function addARole() {
-    db.query("SELECT department.name FROM department", (err, deptId) => {
+    db.query("SELECT * FROM department", (err, departmentList) => {
         console.log(err)
-        const departmentId = deptId.map(dept => dept.name)
+        if (err) throw err;
+        const departmentChoices = departmentList.map(dept => ({ name: dept.name, value: dept.id }));
         inquirer.prompt([
         {
             type: "input",
@@ -118,7 +119,7 @@ function addARole() {
             type: "list",
             name: "department_id",
             message: "What is the department of this role",
-            choices: departmentId,
+            choices: departmentChoices,
         },
     ])
     .then(({ title, salary, department_id })=>{
@@ -134,9 +135,13 @@ function addARole() {
 
 
 function addEmployees() {
-    db.query("SELECT department.name FROM department", (err, deptId) => {
+    db.query("SELECT * FROM employee", (err, employeelist) => {
+      console.log(err)
+      // const departmentChoices = departmentList.map(dept => ({ name: dept.name, value: dept.id }));
+      const employeeChoices= employeelist.map(employee => ({ name: employee.name,  value: employee.id })) 
+      db.query("SELECT * FROM role", (err, rolelist) => {
         console.log(err)
-        const departmentId = deptId.map(dept => dept.name)
+        const roleChoices = rolelist.map(role => ({ name: role.title, value: role.id}))
         inquirer.prompt([
         {
             type: "input",
@@ -152,24 +157,71 @@ function addEmployees() {
             type: "list",
             name: "role_id",
             message: "What is the role id",
-            choices: departmentId,
+            choices: roleChoices,
         },
         {
             type: "list",
             name: "manager_id",
             message: "What is the manager id",
-            choices: departmentId,
+            choices: employeeChoices,
         },
     ])
     .then(({ first_name, last_name, role_id, manager_id })=>{
-        console.log(department_id)
-          db.query("INSERT INTO role set ?",{ first_name, last_name, role_id, manager_id },(error)=>{
+     
+          db.query("INSERT INTO employee set ?",{ first_name, last_name, role_id, manager_id },(error)=>{
                 if (error) throw error;
-                viewAllRoles();
+                viewAllEmployees();
                 employee_tracker();
+
             })
         }) 
      })
+     function updateAnEmployessRole(){
+      db.query("SELECT * FROM employee", (err, employeelist) => {
+        console.log(err) 
+
+            
+        const updateAnEmployessRole= employeelist.map(employee => ({ name: employee.name,  value: employee.id })) 
+      
+      db.query("SELECT * FROM role" ())
+
+        inquirer.prompt([
+        {
+          type: "input",
+          name: "targetemployeeid",
+          message: "Which employee would you like to update",
+      },
+      {
+          type: "input",
+          name: "first_name",
+          message: "What is the first name"
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "What is the last name"
+    },
+    {
+        type: "list",
+        name: "role_id",
+        message: "What is the role id",
+        choices: roleChoices,
+    },
+    {
+        type: "list",
+        name: "manager_id",
+        message: "What is the manager id",
+        choices: employeeChoices,
+    },])
+
+     })
+
+
+    } 
+
+
+
+    
 }
 
 //employee_tracker();
