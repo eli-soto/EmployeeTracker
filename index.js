@@ -248,7 +248,7 @@ function updateEmployee() {
           );
           */
           db.query(
-            "UPDATE employee SET role_id = ? WHERE id = ?",
+            "UPDATE employee SET role_id = ?git  WHERE id = ?",
             [ role_id,  TargetID],  
             (error) => {
               if (error) throw error;
